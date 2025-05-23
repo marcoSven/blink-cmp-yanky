@@ -12,6 +12,12 @@
 
 ---
 
+## Demo
+
+[![Demo Video](assets/blink-yanky-demo.png)](https://github.com/user-attachments/assets/aa4da972-21e1-4368-958c-6f27777fa3d9)
+
+---
+
 ## Installation
 
 Use your preferred plugin manager to install:
