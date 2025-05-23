@@ -116,4 +116,30 @@ describe("blink-yanky yank source", function()
 		-- It won't do anything here, but should not error
 		cancel_fn()
 	end)
+
+	it("filters out yanks shorter than minLength", function(done)
+		local src = yanky.new({ minLength = 5 })
+
+		local fake_history = {
+			{ regcontents = "1234", filetype = "lua" }, -- length 4, should be filtered out
+			{ regcontents = "12345", filetype = "lua" }, -- length 5, should be included
+			{ regcontents = "123456789", filetype = "lua" }, -- length 9, should be included
+		}
+
+		package.loaded["yanky.history"] = {
+			all = function()
+				return fake_history
+			end,
+		}
+
+		local context = { cursor = { 1, 1 }, bounds = { start_col = 1 } }
+
+		src:get_completions(context, function(completions)
+			assert.is_table(completions.items)
+			for _, item in ipairs(completions.items) do
+				assert.is_true(#item.insertText >= 5)
+			end
+			done()
+		end)
+	end)
 end)
