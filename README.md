@@ -1,6 +1,6 @@
-# blink-yanky
+# blink-cmp-yanky
 
-`blink-yanky` is a Neovim Lua plugin that provides a smart yank history completion source for the [blink.cmp](https://github.com/blink-cmp/blink-cmp) completion framework. It enables you to quickly access and insert your clipboard history from [yanky.nvim](https://github.com/gbprod/yanky.nvim), improving your editing workflow with seamless integration and customizable filtering.
+`blink-cmp-yanky` is a Neovim Lua plugin that provides a smart yank history completion source for the [blink.cmp](https://github.com/blink-cmp/blink-cmp) completion framework. It enables you to quickly access and insert your clipboard history from [yanky.nvim](https://github.com/gbprod/yanky.nvim), improving your editing workflow with seamless integration and customizable filtering.
 
 ---
 
@@ -29,7 +29,7 @@ Use your preferred plugin manager to install:
 
   "saghen/blink.cmp",
   dependencies = {
-    { "marcoSven/blink-yanky.nvim", },
+    { "marcoSven/blink-cmp-yanky", },
   },
   opts = {
     sources = {
