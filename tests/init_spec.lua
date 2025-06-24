@@ -142,4 +142,43 @@ describe("blink-yanky yank source", function()
 			done()
 		end)
 	end)
+
+	it("resolve leaves textEdit.newText unchanged when insert = false", function(done)
+		local src = yanky.new({ insert = false })
+		local item = {
+			insertText = "do not insert",
+			textEdit = { newText = "initial" },
+		}
+
+		src:resolve(item, function(resolved)
+			assert.are_equal("initial", resolved.textEdit.newText)
+			vim.defer_fn(done, 1)
+		end)
+	end)
+
+	it("registers the kind_icon from opts", function()
+		local kind_name = "Yank"
+		local custom_icon = "󰅍"
+
+		local CompletionItemKind = require("blink.cmp.types").CompletionItemKind
+		local kind_icons = require("blink.cmp.config").appearance.kind_icons
+
+		CompletionItemKind[kind_name] = nil
+		for i, v in ipairs(CompletionItemKind) do
+			if v == kind_name then
+				table.remove(CompletionItemKind, i)
+				break
+			end
+		end
+		kind_icons[kind_name] = nil
+
+		-- Create new instance with custom icon
+		yanky.new({
+			kind_icon = custom_icon,
+		})
+
+		-- Assertions
+		assert.is_number(CompletionItemKind[kind_name], "Custom kind should be registered")
+		assert.are_equal(custom_icon, kind_icons[kind_name], "Custom icon should be set in kind_icons")
+	end)
 end)

@@ -41,7 +41,8 @@ Use your preferred plugin manager to install:
           opts = {
             minLength = 5,
             onlyCurrentFiletype = true,
-            trigger_characters = { '"' }, -- default is no trigger character
+            trigger_characters = { '"' },
+            kind_icon = "󰅍",
           },
         },
       },
@@ -50,14 +51,27 @@ Use your preferred plugin manager to install:
 
 ```
 
-
 | Option                | Type    | Default | Description                                          |
 | --------------------- | ------- | ------- | ---------------------------------------------------- |
 | `minLength`           | integer | `3`     | Minimum length of yank text to include               |
 | `onlyCurrentFiletype` | boolean | `false` | Filter yanks to only those matching current filetype |
 | `insert`              | boolean | `true`  | Automatically insert the selected completion text    |
-| `trigger_characters`  | table   | `{}`    | Characters that trigger completion (optional)        |
+| `trigger_characters`  | table   | `{}`    | Characters that trigger completion                   |
+| `kind_icon`           | string  | `"󰉿"`   | Icon to display for yank completion kind             |
 
+
+## 🎨 Highlight Group
+
+| Highlight Group    | Linked To   | Description                           |
+| ------------------ | ----------- | ------------------------------------- |
+| `BlinkCmpKindYank` | `PmenuKind` | Used for the yank kind icon and label |
+
+
+You can override this highlight in your Neovim config to customize the appearance:
+
+```lua
+vim.api.nvim_set_hl(0, "BlinkCmpKindYank", { fg = "#e5c07b", bold = true })
+```
 
 ## Usage
 

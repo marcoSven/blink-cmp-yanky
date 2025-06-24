@@ -1,15 +1,36 @@
 local async = require("blink.cmp.lib.async")
+local CompletionItemKind = require("blink.cmp.types").CompletionItemKind
+local kind_icons = require("blink.cmp.config").appearance.kind_icons
 
 local M = { config = {} }
 
 function M.new(opts)
 	local self = setmetatable({}, { __index = M })
+
 	self.config = vim.tbl_deep_extend("keep", opts or {}, {
 		insert = true,
 		minLength = 3,
 		onlyCurrentFiletype = false,
 		trigger_characters = {},
+		custom_kind = "Yank",
+		kind_icon = "󰉿",
 	})
+
+	local kind_name = self.config.custom_kind
+	local icon = self.config.kind_icon
+
+	if icon and not CompletionItemKind[kind_name] then
+		table.insert(CompletionItemKind, kind_name)
+		CompletionItemKind[kind_name] = #CompletionItemKind
+		kind_icons[kind_name] = icon
+		local hl_group = "BlinkCmpKind" .. kind_name
+
+		local ok = pcall(vim.api.nvim_get_hl, 0, { name = hl_group })
+		if not ok then
+			vim.api.nvim_set_hl(0, hl_group, { link = "PmenuKind" })
+		end
+	end
+
 	return self
 end
 
@@ -35,6 +56,7 @@ function M:get_completions(context, callback)
 
 		local seen = {}
 		local items = {}
+		local kind_name = self.config.custom_kind or "Text"
 
 		for _, item in ipairs(history) do
 			local text = vim.trim(item.regcontents or "")
@@ -51,7 +73,8 @@ function M:get_completions(context, callback)
 						kind = "markdown",
 						value = string.format("```%s\n%s\n```", item.filetype or "", text),
 					},
-					kind = require("blink.cmp.types").CompletionItemKind.Text,
+					kind = CompletionItemKind[kind_name] or CompletionItemKind.Text,
+					kind_name = kind_name,
 					textEdit = {
 						range = {
 							start = {
