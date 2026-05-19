@@ -1,4 +1,18 @@
-local async = require("blink.cmp.lib.async")
+local ok, async_task = pcall(require, "blink.lib.task")
+
+if not ok then
+	-- fallback for older blink.cmp versions
+	local async = require("blink.cmp.lib.async")
+
+	async_task = {
+		resolve = function(value)
+			return async.task.empty():map(function()
+				return value
+			end)
+		end,
+	}
+end
+
 local CompletionItemKind = require("blink.cmp.types").CompletionItemKind
 local kind_icons = require("blink.cmp.config").appearance.kind_icons
 
@@ -40,7 +54,7 @@ end
 
 ---@param context blink.cmp.Context
 function M:get_completions(context, callback)
-	local task = async.task.empty():map(function()
+	local task = async_task.resolve(nil):map(function()
 		local history = require("yanky.history").all()
 		local ft = vim.bo.filetype
 
